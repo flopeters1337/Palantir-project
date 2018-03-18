@@ -1,22 +1,27 @@
 
+import argparse
 import logging
 import base64
 import socket
 from threading import Thread
 logging.basicConfig(level=logging.INFO)
 
-PORT_NUMBER = 1337
+DEFAULT_PORT = 1337
 BUFFER_SIZE = 4096
 
 
 def handle_client(client_socket):
+    client_host, client_port = client_socket.getpeername()
+    client_name = client_host + ':' + str(client_port)
+    logging.info('[' + client_name + ']: Now handling')
     msg = b''
 
     try:
         while True:
             chunk = client_socket.recv(BUFFER_SIZE)
             if chunk is b'':
-                raise RuntimeError('Socket connection broken')
+                raise RuntimeError('[' + client_name +
+                                   ']: Socket connection broken')
             msg += chunk
 
             # If we have received an End Of String token
@@ -25,24 +30,32 @@ def handle_client(client_socket):
                 string = base64.b64decode(base64_string).decode('utf-8')
 
                 # Handle message
-                logging.info('Received message "' + string + '"')
+                logging.info('[' + client_name + ']: "' + string + '"')
 
                 # Reset message buffer
                 msg = b''
     finally:
+        logging.info('[' + client_name + ']:Closing connection')
         client_socket.close()
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Client chat interface for '
+                                                 'the L_orang robot.')
+    parser.add_argument('--local', dest='hostname', action='store_const',
+                        const='localhost', default='',
+                        help='run the server on localhost.')
+    parser.add_argument('port', type=int, nargs='?', default=DEFAULT_PORT,
+                        help='port number for the server.')
+    args = parser.parse_args()
+
     # Initialize server socket
     logging.info('Initializing server')
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    hostname = socket.gethostname()
-    server_socket.bind((hostname, PORT_NUMBER))
+    server_socket.bind((args.hostname, args.port))
 
     # Listen for connections
-    logging.info('Listening on port ' + str(PORT_NUMBER) + ' with hostname ' +
-                 hostname)
+    logging.info('Listening on port ' + str(args.port))
     server_socket.listen(5)
 
     # Main loop
