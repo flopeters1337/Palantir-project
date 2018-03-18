@@ -5,16 +5,17 @@ import logging
 import base64
 import socket
 
-logging.basicConfig(level=logging.DEBUG)
+DEFAULT_HOST = 'localhost'
+DEFAULT_PORT = 1337
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Client chat interface for '
                                                  'the L_orang robot.')
     parser.add_argument('address', type=str, nargs='?',
-                        default='Silent-Assassin.lan',
+                        default=DEFAULT_HOST,
                         help='address of the L_orang server.')
-    parser.add_argument('port', type=int, nargs='?', default='1337',
+    parser.add_argument('port', type=int, nargs='?', default=DEFAULT_PORT,
                         help='port number of the L_orang server.')
 
     args = parser.parse_args()
@@ -26,12 +27,15 @@ if __name__ == '__main__':
         logging.debug('Connection successful')
         while True:
             # Print interface
-            sys.stdout.write('me> ')
+            sys.stdout.write('?> ')
             sys.stdout.flush()
 
             # Read user input
             user_text = sys.stdin.readline()
             user_text = user_text[:(len(user_text) - 1)]
+            if user_text == ':exit':
+                logging.debug('Now exiting')
+                break
 
             # Construct socket message
             base64_text = base64.b64encode(user_text.encode('utf-8'))
