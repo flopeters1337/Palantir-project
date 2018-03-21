@@ -66,7 +66,7 @@ if __name__ == '__main__':
                 (client_socket, address) = server_socket.accept()
                 logging.info('Received client connection')
                 ct = Thread(target=handle_client, args=[client_socket])
-                ct.run()
+                ct.start()
             except Exception as e:
                 logging.error(type(e).__name__ + ': "' + str(e)
                               + '" Now recovering')
