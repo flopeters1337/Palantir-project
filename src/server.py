@@ -41,7 +41,7 @@ def handle_client(client_socket):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Client chat interface for '
-                                                 'the L_orang robot.')
+                                                 'the Lorang robot.')
     parser.add_argument('--local', dest='hostname', action='store_const',
                         const='localhost', default='',
                         help='run the server on localhost.')
