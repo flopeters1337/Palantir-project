@@ -11,12 +11,12 @@ DEFAULT_PORT = 1337
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Client chat interface for '
-                                                 'the L_orang robot.')
+                                                 'the Palantir robot.')
     parser.add_argument('address', type=str, nargs='?',
                         default=DEFAULT_HOST,
-                        help='address of the L_orang server.')
+                        help='address of the Palantir server.')
     parser.add_argument('port', type=int, nargs='?', default=DEFAULT_PORT,
-                        help='port number of the L_orang server.')
+                        help='port number of the Palantir server.')
 
     args = parser.parse_args()
 
@@ -25,6 +25,8 @@ if __name__ == '__main__':
     try:
         client_socket.connect((args.address, args.port))
         logging.debug('Connection successful')
+        sys.stdout.write('Now connected to Palantir. Type \':exit\' to '
+                         'exit the program.\n')
         while True:
             # Print interface
             sys.stdout.write('?> ')
