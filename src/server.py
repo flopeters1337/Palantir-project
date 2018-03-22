@@ -19,6 +19,7 @@ def handle_client(client_socket):
     msg = b''
 
     try:
+        # Receive message from client
         while True:
             chunk = client_socket.recv(BUFFER_SIZE)
             if chunk is b'':
@@ -30,12 +31,23 @@ def handle_client(client_socket):
             if ':EOS:' in chunk.decode('utf-8'):
                 base64_string = msg[:(len(msg) - 5)]
                 string = base64.b64decode(base64_string).decode('utf-8')
+                break
+        logging.info('[' + client_name + ']: "' + string + '"')
 
-                # Handle message
-                logging.info('[' + client_name + ']: "' + string + '"')
+        # Construct socket message (simple echo)
+        base64_text = base64.b64encode(string.encode('utf-8'))
+        msg = base64_text + b':EOS:'
 
-                # Reset message buffer
-                msg = b''
+        # Send the reply
+        total_bytes = 0
+        while total_bytes < len(msg):
+            bytes_sent = client_socket.send(msg[total_bytes:])
+            logging.debug('Sent ' + str(bytes_sent) + '/' + str(len(msg))
+                          + ' bytes')
+            if bytes_sent == 0:
+                raise RuntimeError('Connection error')
+            total_bytes += bytes_sent
+        logging.info('[' + client_name + ']: Reply successfully sent')
     finally:
         logging.info('[' + client_name + ']: Closing connection')
         client_socket.close()
@@ -72,8 +84,6 @@ if __name__ == '__main__':
                 (client_socket, address) = server_socket.accept()
                 logging.info('Received client connection')
                 pool.map_async(handle_client, [client_socket])
-                #ct = Thread(target=handle_client, args=[client_socket])
-                #ct.start()
             except Exception as e:
                 logging.error(type(e).__name__ + ': "' + str(e)
                               + '" Now recovering')

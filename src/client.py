@@ -4,14 +4,16 @@ import argparse
 import logging
 import base64
 import socket
+logging.basicConfig(level=logging.INFO)
 
 DEFAULT_HOST = 'localhost'
 DEFAULT_PORT = 1337
+BUFFER_SIZE = 4096
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Client chat interface for '
-                                                 'the Palantir robot.')
+                                                 'the Palantir assistant.')
     parser.add_argument('address', type=str, nargs='?',
                         default=DEFAULT_HOST,
                         help='address of the Palantir server.')
@@ -55,6 +57,30 @@ if __name__ == '__main__':
                 total_bytes += bytes_sent
 
             logging.debug('Message successfully sent')
+
+            # Wait for answer from server
+            msg = b''
+            while True:
+                chunk = client_socket.recv(BUFFER_SIZE)
+                if chunk is b'':
+                    raise RuntimeError('Socket connection broken')
+                msg += chunk
+
+                # If we have received an End Of String token
+                if ':EOS:' in chunk.decode('utf-8'):
+                    logging.debug("Received message : \"" + str(msg) + "\"")
+                    base64_string = msg[:(len(msg) - 5)]
+                    string = base64.b64decode(base64_string).decode('utf-8')
+                    break
+
+            sys.stdout.write('(Palantir)> ' + string + '\n')
+
+            logging.debug('Closing socket')
+            client_socket.close()
+
+            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client_socket.connect((args.address, args.port))
+            logging.debug('Connection successful')
     finally:
         logging.debug('Closing socket')
         client_socket.close()
