@@ -3,11 +3,13 @@ import argparse
 import logging
 import base64
 import socket
+from multiprocessing.pool import ThreadPool
 from threading import Thread
 logging.basicConfig(level=logging.INFO)
 
 DEFAULT_PORT = 1337
 BUFFER_SIZE = 4096
+POOL_SIZE = 50
 
 
 def handle_client(client_socket):
@@ -35,7 +37,7 @@ def handle_client(client_socket):
                 # Reset message buffer
                 msg = b''
     finally:
-        logging.info('[' + client_name + ']:Closing connection')
+        logging.info('[' + client_name + ']: Closing connection')
         client_socket.close()
 
 
@@ -49,8 +51,12 @@ if __name__ == '__main__':
                         help='port number for the server.')
     args = parser.parse_args()
 
+    # Initialize thread pool
+    logging.info('Creating thread pools of size ' + str(POOL_SIZE))
+    pool = ThreadPool(POOL_SIZE)
+
     # Initialize server socket
-    logging.info('Initializing server')
+    logging.info('Initializing server socket')
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((args.hostname, args.port))
 
@@ -65,8 +71,9 @@ if __name__ == '__main__':
                 logging.info('Waiting for requests')
                 (client_socket, address) = server_socket.accept()
                 logging.info('Received client connection')
-                ct = Thread(target=handle_client, args=[client_socket])
-                ct.start()
+                pool.map_async(handle_client, [client_socket])
+                #ct = Thread(target=handle_client, args=[client_socket])
+                #ct.start()
             except Exception as e:
                 logging.error(type(e).__name__ + ': "' + str(e)
                               + '" Now recovering')
