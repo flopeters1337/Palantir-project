@@ -7,7 +7,7 @@ import json
 from multiprocessing.pool import ThreadPool
 from threading import Thread
 from palantir_socket import PalantirSocket
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 DEFAULT_PORT = 1337
 BUFFER_SIZE = 4096
@@ -16,9 +16,7 @@ POOL_SIZE = 50
 
 def handle_client(client_socket):
     client_socket = PalantirSocket(BUFFER_SIZE, socket_obj=client_socket)
-    logging.debug('Created socket')
     client_host, client_port = client_socket.getpeername()
-    logging.debug('Got peername')
     client_name = client_host + ':' + str(client_port)
     logging.info('[' + client_name + ']: Now handling')
 
@@ -26,9 +24,17 @@ def handle_client(client_socket):
         string = client_socket.rcv()
         logging.info('[' + client_name + ']: "' + string + '"')
 
-        # Construct socket message (simple echo)
+        # Handle socket message
         if 'Lorang' in string:
-            pass
+            gripper_status = 1 if 'open' in string else 0
+            command = json.dumps({'id': 1, 'gripper': gripper_status})
+            lorang_socket = PalantirSocket(BUFFER_SIZE, family=socket.AF_INET,
+                                           socket_type=socket.SOCK_STREAM)
+            try:
+                lorang_socket.connect('ros-desktop', 1337)
+                lorang_socket.send(command)
+            finally:
+                lorang_socket.close()
 
         # Send the reply
         client_socket.send(string)
