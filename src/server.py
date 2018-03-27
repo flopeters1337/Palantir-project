@@ -4,7 +4,6 @@ import logging
 import base64
 import socket
 from multiprocessing.pool import ThreadPool
-from threading import Thread
 from palantir_socket import PalantirSocket
 logging.basicConfig(level=logging.DEBUG)
 
