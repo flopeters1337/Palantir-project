@@ -35,9 +35,13 @@ class PalantirSocket:
         self.__socket.listen(num_connections)
 
     def send(self, message):
+        # Construct socket message
+        base64_text = base64.b64encode(message.encode('utf-8'))
+        msg = base64_text + b':EOS:'
+
         total_bytes = 0
-        while total_bytes < len(message):
-            bytes_sent = self.__socket.send(message[total_bytes:])
+        while total_bytes < len(msg):
+            bytes_sent = self.__socket.send(msg[total_bytes:])
             if bytes_sent == 0:
                 raise RuntimeError('Broken pipe')
             total_bytes += bytes_sent

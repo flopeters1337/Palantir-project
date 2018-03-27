@@ -43,13 +43,9 @@ if __name__ == '__main__':
                 logging.debug('Now exiting')
                 break
 
-            # Construct socket message
-            base64_text = base64.b64encode(user_text.encode('utf-8'))
-            msg = base64_text + b':EOS:'
-
             # Send socket message
             logging.debug('Sending message')
-            client_socket.send(msg)
+            client_socket.send(user_text)
 
             logging.debug('Message successfully sent')
 

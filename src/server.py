@@ -3,6 +3,7 @@ import argparse
 import logging
 import base64
 import socket
+import json
 from multiprocessing.pool import ThreadPool
 from threading import Thread
 from palantir_socket import PalantirSocket
@@ -26,11 +27,11 @@ def handle_client(client_socket):
         logging.info('[' + client_name + ']: "' + string + '"')
 
         # Construct socket message (simple echo)
-        base64_text = base64.b64encode(string.encode('utf-8'))
-        msg = base64_text + b':EOS:'
+        if 'Lorang' in string:
+            pass
 
         # Send the reply
-        client_socket.send(msg)
+        client_socket.send(string)
         logging.info('[' + client_name + ']: Reply successfully sent')
     finally:
         logging.info('[' + client_name + ']: Closing connection')
