@@ -24,10 +24,6 @@ def handle_client(client_socket):
         string = client_socket.rcv()
         logging.info('[' + client_name + ']: "' + string + '"')
 
-        # Construct socket message (simple echo)
-        base64_text = base64.b64encode(string.encode('utf-8'))
-        msg = base64_text + b':EOS:'
-
         # Send the reply
         client_socket.send(msg)
         logging.info('[' + client_name + ']: Reply successfully sent')
