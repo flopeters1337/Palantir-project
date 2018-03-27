@@ -28,6 +28,9 @@ class PalantirSocket:
     def bind(self, hostname, port):
         self.__socket.bind((hostname, port))
 
+    def connect(self, address, port):
+        self.__socket.connect((address, port))
+
     def listen(self, num_connections):
         self.__socket.listen(num_connections)
 
@@ -61,3 +64,6 @@ class PalantirSocket:
 
     def close(self):
         self.__socket.close()
+
+    def getpeername(self):
+        return self.__socket.getpeername()

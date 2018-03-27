@@ -5,7 +5,8 @@ import base64
 import socket
 from multiprocessing.pool import ThreadPool
 from threading import Thread
-logging.basicConfig(level=logging.INFO)
+from palantir_socket import PalantirSocket
+logging.basicConfig(level=logging.DEBUG)
 
 DEFAULT_PORT = 1337
 BUFFER_SIZE = 4096
@@ -13,25 +14,15 @@ POOL_SIZE = 50
 
 
 def handle_client(client_socket):
+    client_socket = PalantirSocket(BUFFER_SIZE, socket_obj=client_socket)
+    logging.debug('Created socket')
     client_host, client_port = client_socket.getpeername()
+    logging.debug('Got peername')
     client_name = client_host + ':' + str(client_port)
     logging.info('[' + client_name + ']: Now handling')
-    msg = b''
 
     try:
-        # Receive message from client
-        while True:
-            chunk = client_socket.recv(BUFFER_SIZE)
-            if chunk is b'':
-                raise RuntimeError('[' + client_name +
-                                   ']: Socket connection broken')
-            msg += chunk
-
-            # If we have received an End Of String token
-            if ':EOS:' in chunk.decode('utf-8'):
-                base64_string = msg[:(len(msg) - 5)]
-                string = base64.b64decode(base64_string).decode('utf-8')
-                break
+        string = client_socket.rcv()
         logging.info('[' + client_name + ']: "' + string + '"')
 
         # Construct socket message (simple echo)
@@ -39,14 +30,7 @@ def handle_client(client_socket):
         msg = base64_text + b':EOS:'
 
         # Send the reply
-        total_bytes = 0
-        while total_bytes < len(msg):
-            bytes_sent = client_socket.send(msg[total_bytes:])
-            logging.debug('Sent ' + str(bytes_sent) + '/' + str(len(msg))
-                          + ' bytes')
-            if bytes_sent == 0:
-                raise RuntimeError('Connection error')
-            total_bytes += bytes_sent
+        client_socket.send(msg)
         logging.info('[' + client_name + ']: Reply successfully sent')
     finally:
         logging.info('[' + client_name + ']: Closing connection')
@@ -69,8 +53,10 @@ if __name__ == '__main__':
 
     # Initialize server socket
     logging.info('Initializing server socket')
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind((args.hostname, args.port))
+    server_socket = PalantirSocket(BUFFER_SIZE,
+                                   family=socket.AF_INET,
+                                   socket_type=socket.SOCK_STREAM)
+    server_socket.bind(args.hostname, args.port)
 
     # Listen for connections
     logging.info('Listening on port ' + str(args.port))

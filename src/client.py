@@ -4,6 +4,7 @@ import argparse
 import logging
 import base64
 import socket
+from palantir_socket import PalantirSocket
 logging.basicConfig(level=logging.INFO)
 
 DEFAULT_HOST = 'localhost'
@@ -22,10 +23,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket = PalantirSocket(BUFFER_SIZE, family=socket.AF_INET,
+                                   socket_type=socket.SOCK_STREAM)
 
     try:
-        client_socket.connect((args.address, args.port))
+        client_socket.connect(args.address, args.port)
         logging.debug('Connection successful')
         sys.stdout.write('Now connected to Palantir. Type \':exit\' to '
                          'exit the program.\n')
@@ -47,39 +49,21 @@ if __name__ == '__main__':
 
             # Send socket message
             logging.debug('Sending message')
-            total_bytes = 0
-            while total_bytes < len(msg):
-                bytes_sent = client_socket.send(msg[total_bytes:])
-                logging.debug('Sent ' + str(bytes_sent) + '/' + str(len(msg))
-                              + ' bytes')
-                if bytes_sent == 0:
-                    raise RuntimeError('Connection error')
-                total_bytes += bytes_sent
+            client_socket.send(msg)
 
             logging.debug('Message successfully sent')
 
             # Wait for answer from server
-            msg = b''
-            while True:
-                chunk = client_socket.recv(BUFFER_SIZE)
-                if chunk is b'':
-                    raise RuntimeError('Socket connection broken')
-                msg += chunk
-
-                # If we have received an End Of String token
-                if ':EOS:' in chunk.decode('utf-8'):
-                    logging.debug("Received message : \"" + str(msg) + "\"")
-                    base64_string = msg[:(len(msg) - 5)]
-                    string = base64.b64decode(base64_string).decode('utf-8')
-                    break
+            string = client_socket.rcv()
 
             sys.stdout.write('(Palantir)> ' + string + '\n')
 
             logging.debug('Closing socket')
             client_socket.close()
 
-            client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client_socket.connect((args.address, args.port))
+            client_socket = PalantirSocket(BUFFER_SIZE, family=socket.AF_INET,
+                                           socket_type=socket.SOCK_STREAM)
+            client_socket.connect(args.address, args.port)
             logging.debug('Connection successful')
     finally:
         logging.debug('Closing socket')
