@@ -38,8 +38,7 @@ def handle_client(client_socket):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Client chat interface for '
-                                                 'the Lorang robot.')
+    parser = argparse.ArgumentParser(description='Palantir server command.')
     parser.add_argument('--local', dest='hostname', action='store_const',
                         const='localhost', default='',
                         help='run the server on localhost.')
