@@ -23,18 +23,6 @@ def handle_client(client_socket):
         string = client_socket.rcv()
         logging.info('[' + client_name + ']: "' + string + '"')
 
-        # Handle socket message
-        if 'Lorang' in string:
-            gripper_status = 1 if 'open' in string else 0
-            command = json.dumps({'id': 1, 'gripper': gripper_status})
-            lorang_socket = PalantirSocket(BUFFER_SIZE, family=socket.AF_INET,
-                                           socket_type=socket.SOCK_STREAM)
-            try:
-                lorang_socket.connect('ros-desktop', 1337)
-                lorang_socket.send(command)
-            finally:
-                lorang_socket.close()
-
         # Send the reply
         client_socket.send(string)
         logging.info('[' + client_name + ']: Reply successfully sent')
