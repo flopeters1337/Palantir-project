@@ -13,7 +13,7 @@ to the Palantir ecosystem.
 
 ## Project's global progress
 - [x] Basic socket communication between devices
-- [ ] Data encryption
+- [x] Data encryption
 - [ ] Palantir protocol v1.0
 - [ ] Chatbot interface
 
