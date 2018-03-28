@@ -2,8 +2,9 @@
 import sys
 import argparse
 import logging
-import base64
 import socket
+from Crypto.Cipher import AES
+from definitions import aes_passphrase, aes_iv
 from palantir_socket import PalantirSocket
 logging.basicConfig(level=logging.INFO)
 
@@ -23,7 +24,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    client_socket = PalantirSocket(BUFFER_SIZE, family=socket.AF_INET,
+    client_socket = PalantirSocket(BUFFER_SIZE,
+                                   AES.new(aes_passphrase,
+                                           AES.MODE_CBC,
+                                           aes_iv),
+                                   family=socket.AF_INET,
                                    socket_type=socket.SOCK_STREAM)
 
     try:
@@ -57,7 +62,11 @@ if __name__ == '__main__':
             logging.debug('Closing socket')
             client_socket.close()
 
-            client_socket = PalantirSocket(BUFFER_SIZE, family=socket.AF_INET,
+            client_socket = PalantirSocket(BUFFER_SIZE,
+                                           AES.new(aes_passphrase,
+                                                   AES.MODE_CBC,
+                                                   aes_iv),
+                                           family=socket.AF_INET,
                                            socket_type=socket.SOCK_STREAM)
             client_socket.connect(args.address, args.port)
             logging.debug('Connection successful')
