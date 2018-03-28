@@ -5,6 +5,8 @@ import base64
 import socket
 import json
 from multiprocessing.pool import ThreadPool
+from Crypto.Cipher import AES
+from definitions import aes_passphrase, aes_iv
 from palantir_socket import PalantirSocket
 logging.basicConfig(level=logging.INFO)
 
@@ -14,7 +16,11 @@ POOL_SIZE = 50
 
 
 def handle_client(client_socket):
-    client_socket = PalantirSocket(BUFFER_SIZE, socket_obj=client_socket)
+    client_socket = PalantirSocket(BUFFER_SIZE,
+                                   AES.new(aes_passphrase,
+                                           AES.MODE_CBC,
+                                           aes_iv),
+                                   socket_obj=client_socket)
     client_host, client_port = client_socket.getpeername()
     client_name = client_host + ':' + str(client_port)
     logging.info('[' + client_name + ']: Now handling')
@@ -46,7 +52,7 @@ if __name__ == '__main__':
 
     # Initialize server socket
     logging.info('Initializing server socket')
-    server_socket = PalantirSocket(BUFFER_SIZE,
+    server_socket = PalantirSocket(BUFFER_SIZE, None,
                                    family=socket.AF_INET,
                                    socket_type=socket.SOCK_STREAM)
     server_socket.bind(args.hostname, args.port)
