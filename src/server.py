@@ -1,9 +1,7 @@
 
 import argparse
 import logging
-import base64
 import socket
-import json
 from multiprocessing.pool import ThreadPool
 from Crypto.Cipher import AES
 from definitions import aes_passphrase, aes_iv

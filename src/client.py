@@ -2,7 +2,6 @@
 import sys
 import argparse
 import logging
-import base64
 import socket
 from Crypto.Cipher import AES
 from definitions import aes_passphrase, aes_iv
