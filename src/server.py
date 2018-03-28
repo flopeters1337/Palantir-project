@@ -6,7 +6,7 @@ from multiprocessing.pool import ThreadPool
 from Crypto.Cipher import AES
 from definitions import aes_passphrase, aes_iv
 from palantir_socket import PalantirSocket
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 DEFAULT_PORT = 1337
 BUFFER_SIZE = 4096
@@ -30,6 +30,9 @@ def handle_client(client_socket):
         # Send the reply
         client_socket.send(string)
         logging.info('[' + client_name + ']: Reply successfully sent')
+    except Exception as e:
+        logging.error('[' + client_name + ']:' + type(e).__name__ + ": "
+                     + str(e))
     finally:
         logging.info('[' + client_name + ']: Closing connection')
         client_socket.close()
