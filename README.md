@@ -16,6 +16,7 @@ to the Palantir ecosystem.
 - [x] Data encryption
 - [ ] Palantir protocol v1.0
 - [ ] Chatbot interface
+- [ ] Speech recognition module
 
 ---
 ### Authors
