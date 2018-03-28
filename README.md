@@ -1,5 +1,7 @@
-# Palantir Project [![Build Status](https://travis-ci.org/flopeters1337/Palantir-project.svg?branch=master)](https://travis-ci.org/flopeters1337/Palantir-project)
+# Palantir Project [![Build Status](https://travis-ci.org/flopeters1337/Palantir-project.svg?branch=master)](https://travis-ci.org/flopeters1337/Palantir-project) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) [![GitHub stars](https://img.shields.io/github/stars/Naereen/StrapDown.js.svg?style=social&label=Star&maxAge=2592000)](https://GitHub.com/Naereen/StrapDown.js/stargazers/)
 <i>One Palantir to rule them all...</i>
+
+[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
 ## Description
 Imagine hiring a butler for your home. One that could brew you coffee and report the status of your home when you're away.
