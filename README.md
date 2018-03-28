@@ -15,6 +15,7 @@ to the Palantir ecosystem.
 - [x] Basic socket communication between devices
 - [x] Data encryption
 - [ ] Palantir protocol v1.0
+- [ ] Devices management
 - [ ] Chatbot interface
 - [ ] Speech recognition module
 
