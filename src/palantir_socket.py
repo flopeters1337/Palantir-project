@@ -57,7 +57,6 @@ class PalantirSocket:
             total_bytes += bytes_sent
 
     def rcv(self):
-
         # Get message from socket
         msg = b''
         while True:
