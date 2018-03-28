@@ -1,4 +1,4 @@
-# Palantir Project
+# Palantir Project [![Build Status](https://travis-ci.org/flopeters1337/Palantir-project.svg?branch=master)](https://travis-ci.org/flopeters1337/Palantir-project)
 <i>One Palantir to rule them all...</i>
 
 ## Description
