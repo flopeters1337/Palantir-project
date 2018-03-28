@@ -1,4 +1,4 @@
-# Palantir Project [![Build Status](https://travis-ci.org/flopeters1337/Palantir-project.svg?branch=master)](https://travis-ci.org/flopeters1337/Palantir-project) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/flopeters1337/Palantir-project/blob/master/LICENSE)
+# Palantir Project [![Build Status](https://travis-ci.org/flopeters1337/Palantir-project.svg?branch=master)](https://travis-ci.org/flopeters1337/Palantir-project) ![license](https://img.shields.io/github/license/flopeters1337/Palantir-project.svg) ![GitHub forks](https://img.shields.io/github/stars/flopeters1337/Palantir-project.svg?style=social&label=Stars)
 <i>One Palantir to rule them all...</i>
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
