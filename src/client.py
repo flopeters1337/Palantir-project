@@ -6,70 +6,63 @@ import socket
 from Crypto.Cipher import AES
 from definitions import aes_passphrase, aes_iv
 from palantir_socket import PalantirSocket
-logging.basicConfig(level=logging.INFO)
-
-DEFAULT_HOST = 'localhost'
-DEFAULT_PORT = 1337
-BUFFER_SIZE = 4096
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Client chat interface for '
-                                                 'the Palantir assistant.')
-    parser.add_argument('address', type=str, nargs='?',
-                        default=DEFAULT_HOST,
-                        help='address of the Palantir server.')
-    parser.add_argument('port', type=int, nargs='?', default=DEFAULT_PORT,
-                        help='port number of the Palantir server.')
+class TerminalClient:
+    def __init__(self, buffer_size: int = 4096,
+                 server_address: str = 'localhost', server_port: int = 1337):
+        """
 
-    args = parser.parse_args()
+        """
+        self.__buffer_size = buffer_size
+        self.__server_address = server_address
+        self.__server_port = server_port
 
-    client_socket = PalantirSocket(BUFFER_SIZE,
-                                   AES.new(aes_passphrase,
-                                           AES.MODE_CBC,
-                                           aes_iv),
-                                   family=socket.AF_INET,
-                                   socket_type=socket.SOCK_STREAM)
+    def run(self):
+        """
 
-    try:
-        client_socket.connect(args.address, args.port)
-        logging.debug('Connection successful')
-        sys.stdout.write('Now connected to Palantir. Type \':exit\' to '
-                         'exit the program.\n')
-        while True:
-            # Print interface
-            sys.stdout.write('?> ')
-            sys.stdout.flush()
+        :return:
+        """
+        client_socket = PalantirSocket(self.__buffer_size,
+                                       AES.new(aes_passphrase,
+                                               AES.MODE_CBC,
+                                               aes_iv),
+                                       family=socket.AF_INET,
+                                       socket_type=socket.SOCK_STREAM)
 
-            # Read user input
-            user_text = sys.stdin.readline()
-            user_text = user_text[:(len(user_text) - 1)]
-            if user_text == ':exit':
-                logging.debug('Now exiting')
-                break
+        try:
+            sys.stdout.write('Type \':exit\' to '
+                             'exit the program.\n')
+            while True:
+                # Print interface
+                sys.stdout.write('?> ')
+                sys.stdout.flush()
 
-            # Send socket message
-            logging.debug('Sending message')
-            client_socket.send(user_text)
+                # Read user input
+                user_text = sys.stdin.readline()
+                user_text = user_text[:(len(user_text) - 1)]
+                if user_text == ':exit':
+                    logging.debug('Now exiting')
+                    break
 
-            logging.debug('Message successfully sent')
+                # Connect to Palantir server
+                client_socket.connect(self.__server_address,
+                                      self.__server_port)
+                logging.debug('Connection successful')
 
-            # Wait for answer from server
-            string = client_socket.rcv()
+                # Send socket message
+                logging.debug('Sending message')
+                client_socket.send(user_text)
 
-            sys.stdout.write('(Palantir)> ' + string + '\n')
+                logging.debug('Message successfully sent')
 
+                # Wait for answer from server
+                string = client_socket.rcv()
+
+                sys.stdout.write('(Palantir)> ' + string + '\n')
+
+                logging.debug('Closing socket')
+                client_socket.close()
+        finally:
             logging.debug('Closing socket')
             client_socket.close()
-
-            client_socket = PalantirSocket(BUFFER_SIZE,
-                                           AES.new(aes_passphrase,
-                                                   AES.MODE_CBC,
-                                                   aes_iv),
-                                           family=socket.AF_INET,
-                                           socket_type=socket.SOCK_STREAM)
-            client_socket.connect(args.address, args.port)
-            logging.debug('Connection successful')
-    finally:
-        logging.debug('Closing socket')
-        client_socket.close()
