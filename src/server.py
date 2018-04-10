@@ -3,8 +3,8 @@ import logging
 import socket
 from multiprocessing.pool import ThreadPool
 from Crypto.Cipher import AES
-from definitions import aes_passphrase, aes_iv
-from palantir_socket import PalantirSocket
+from src.definitions import aes_passphrase, aes_iv
+from src.palantir_socket import PalantirSocket
 
 
 class PalantirServer:

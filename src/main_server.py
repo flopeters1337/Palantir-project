@@ -1,7 +1,7 @@
 
 import logging
 import argparse
-from server import PalantirServer
+from src.server import PalantirServer
 logging.basicConfig(level=logging.INFO,
                     format='[%(asctime)s]:%(levelname)s: %(message)s')
 

@@ -4,8 +4,8 @@ import argparse
 import logging
 import socket
 from Crypto.Cipher import AES
-from definitions import aes_passphrase, aes_iv
-from palantir_socket import PalantirSocket
+from src.definitions import aes_passphrase, aes_iv
+from src.palantir_socket import PalantirSocket
 
 
 class TerminalClient:
