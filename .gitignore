@@ -103,5 +103,3 @@ ENV/
 # PyCharm stuff
 .idea/
 
-# Critical application keys and credentials
-credentials.py
