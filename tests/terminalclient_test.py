@@ -36,5 +36,5 @@ class TestTerminalClient:
         server_thread.start()
 
         # Launch client
-        client = TerminalClient(server_port=1338)
+        client = TerminalClient(server_address='', server_port=1338)
         client.run()
