@@ -1,4 +1,5 @@
 
+from time import sleep
 from threading import Thread
 from src.server import PalantirServer
 from src.client import TerminalClient
@@ -34,6 +35,7 @@ class TestTerminalClient:
         server_thread = Thread(target=server.run)
         server_thread.setDaemon(True)
         server_thread.start()
+        sleep(1)
 
         # Launch client
         client = TerminalClient(server_address='', server_port=1338)
