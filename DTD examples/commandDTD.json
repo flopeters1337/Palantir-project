@@ -1,0 +1,13 @@
+{
+  '<actuator1>':  [
+    '<parameter1>': '<value of parameter1>',
+    '<parameter2>': '<value of parameter2>',
+    '...'
+  ],
+  '<actuator2>':  [
+    '<parameter1>': '<value of parameter1>',
+    '<parameter2>': '<value of parameter2>',
+    '...'
+  ],
+  '...'
+}

@@ -1,0 +1,25 @@
+{
+  'name': '<name of the actuator>',
+  'parameters': [
+    {
+      'name': '<name of parameter>',
+      'optional': '<true or false>',
+      'type': '<either int, float or str>',
+      'domain': '<domainDTO>'
+    }
+  ]
+}
+
+### DomainDTO ###
+{
+  'min':  '<int or float> (optional)',
+  'max':  '<int or float> (optional)'
+}
+
+# OR (finite domain style)
+
+[
+  '<value1>',
+  '<value2>',
+  '...'
+]

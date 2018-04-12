@@ -1,0 +1,14 @@
+{
+    'type': 'contract',
+    'payload':  '<contractDTO>'
+}
+
+{
+    'type': 'user',
+    'payload':  '<usermessageDTO>'
+}
+
+{
+    'type': 'command',
+    'payload':  '<commandDTO>'
+}
