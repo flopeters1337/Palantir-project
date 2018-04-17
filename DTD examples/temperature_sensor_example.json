@@ -1,0 +1,14 @@
+{
+  'type': 'contract',
+  'payload': {
+    'alias':  'temperature-sensor.lan',
+    'type': 'static',
+    'location': 'kitchen',
+    'sensors':  [
+      {
+        'name': 'temperature',
+        'return_type':  'int'
+      }
+    ]
+  }
+}

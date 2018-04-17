@@ -1,0 +1,15 @@
+{
+  'alias':  '<alias name on LAN> (optional)',
+  'type':   '<type of connected object (dynamic or static)>',
+  'location': '<name of the room of the sensor> (only if object is static or stays in the same room, e.g. a roomba)',
+  'sensors': [
+    '<sensorDTO>',
+    '<sensorDTO>',
+    '...'
+  ],
+  'actuators': [
+    '<actuatorDTO>',
+    '<actuatorDTO>',
+    '...'
+  ]
+}

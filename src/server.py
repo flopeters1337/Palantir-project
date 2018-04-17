@@ -1,6 +1,7 @@
 
 import logging
 import socket
+import json
 from multiprocessing.pool import ThreadPool
 from Crypto.Cipher import AES
 from src.definitions import aes_passphrase, aes_iv
@@ -69,11 +70,25 @@ class PalantirServer:
 
         try:
             string = client_socket.rcv()
-            logging.info('[' + client_name + ']: "' + string + '"')
 
-            # Send the reply
-            client_socket.send(string)
-            logging.info('[' + client_name + ']: Reply successfully sent')
+            # Parse json
+            msg_json = json.loads(string)
+
+            # User message
+            if msg_json['type'] == 'user':
+                logging.info('[' + client_name + ']: "'
+                             + msg_json['payload']['message'] + '"')
+                # Send the reply
+                client_socket.send(msg_json['payload']['message'])
+                logging.info('[' + client_name + ']: Reply successfully sent')
+
+            # Device contract
+            elif msg_json['type'] == 'contract':
+                pass    # TODO: Add new device if it does not already exist
+
+            # Unhandled case
+            else:
+                pass    # TODO: Error handling
         except Exception as e:
             logging.error('[' + client_name + ']:' + type(e).__name__ + ": "
                           + str(e))

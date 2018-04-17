@@ -1,0 +1,4 @@
+{
+  'name': '<name of the sensor>',
+  'return_type':  '<either int, float or str>'
+}
