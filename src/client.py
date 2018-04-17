@@ -1,6 +1,6 @@
 
 import sys
-import argparse
+import json
 import logging
 import socket
 from Crypto.Cipher import AES
@@ -50,9 +50,18 @@ class TerminalClient:
                                       self.__server_port)
                 logging.debug('Connection successful')
 
+                # Build socket message
+                msg_json = {
+                    'type': 'user',
+                    'payload': {
+                        'message': user_text
+                    }
+                }
+                msg = json.dumps(msg_json)
+
                 # Send socket message
                 logging.debug('Sending message')
-                client_socket.send(user_text)
+                client_socket.send(msg)
 
                 logging.debug('Message successfully sent')
 
